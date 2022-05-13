@@ -27,9 +27,11 @@ namespace API
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "WebAPIv5", Version = "v1" });
             });
-            services.AddDbContext<StoreContext>(opt => {
+            services.AddDbContext<StoreContext>(opt => 
+            {
                 opt.UseSqlite(Configuration.GetConnectionString("DefaultConnection"));
             });
+            services.AddCors();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -38,6 +40,7 @@ namespace API
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+
                 app.UseSwagger();
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "WebAPIv5 v1"));
             }
@@ -45,6 +48,11 @@ namespace API
             //app.UseHttpsRedirection(); We don't want to route to HTTPS since we are not using it for dev local host
 
             app.UseRouting();
+
+            app.UseCors(opt => 
+            {
+                opt.AllowAnyHeader().AllowAnyMethod().WithOrigins("http://localhost:3000");    
+            });
 
             app.UseAuthorization();
 

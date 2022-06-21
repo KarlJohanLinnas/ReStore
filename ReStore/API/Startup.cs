@@ -1,3 +1,4 @@
+using API.Middleware;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -37,10 +38,10 @@ namespace API
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            app.UseMiddleware<ExceptionMiddleware>();
+
             if (env.IsDevelopment())
             {
-                app.UseDeveloperExceptionPage();
-
                 app.UseSwagger();
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "WebAPIv5 v1"));
             }
@@ -48,10 +49,9 @@ namespace API
             //app.UseHttpsRedirection(); We don't want to route to HTTPS since we are not using it for dev local host
 
             app.UseRouting();
-
             app.UseCors(opt => 
             {
-                opt.AllowAnyHeader().AllowAnyMethod().WithOrigins("http://localhost:3000");    
+                opt.AllowAnyHeader().AllowAnyMethod().SetIsOriginAllowed(origin=>true).AllowCredentials().WithOrigins("http://localhost:3000"); 
             });
 
             app.UseAuthorization();

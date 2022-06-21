@@ -1,3 +1,4 @@
+using API.Entities;
 using Microsoft.EntityFrameworkCore;
 using ReStore.API.Entities;
 
@@ -10,5 +11,6 @@ namespace ReStore.API.Data
         }
 
         public DbSet<Product> Products { get; set; }
+        public DbSet<Basket> Baskets { get; set; }
     }
 }
